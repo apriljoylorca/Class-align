@@ -82,4 +82,4 @@ ClassAlign/
 
 # Prefer a Video Guide?
 - Watch our tutorial on YouTube.
-- https://youtu.be/hfv4ITOWuoM
+- https://youtu.be/hfv4ITOWuoM?si=1489Z7wHElRaxrIW
