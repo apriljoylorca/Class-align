@@ -1,15 +1,15 @@
 # ClassAlign
 
-A modern approach to class mangaement, classroom real-time availability tracking and booking, with AI scheduling and display.
+Class Align is a web-based platform designed to optimize class scheduling and improve communication between students, teachers, and administrators. It offers AI-powered scheduling, real-time class management, and personalized notifications. With the added feature of real-time classroom availability tracking and booking, users can instantly check room availability and reserve spaces, ensuring efficient use of resources. Class Align allows users to create, track, and update schedules seamlessly—reducing conflicts and enhancing productivity. The platform ensures a smooth academic experience by providing an intuitive interface for managing class schedules efficiently.
 
 ## Features
 
 - User authentication (Teacher/Student roles)
-- Interactive home screen with upcoming classes
-- Classroom availability and booking system
-- Calendar integration for scheduling
-- Real-time notifications and announcements
-- Profile management
+- Interactive home screen with upcoming classes display
+- AI-Powered Scheduling
+- Real-time Classroom Availability Tracking & Booking
+- Class Management
+- Notifications & Updates
 - Schedule Display
 
 ## Tech Stack
@@ -51,10 +51,35 @@ ClassAlign/
 └── App.js              # Root component
 ```
 
-## Contributing
+# Class Align – Mobile App Installation Guide
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## For Android Users
+
+- Open the Google Play Store
+- Search for "Class Align"
+- Tap "Install"
+- Open the app after installation
+- Sign up or log in (Use your school id as it is required)
+
+## Alternative for APK:
+- If the app isn’t on Play Store, download the APK from your school’s link, enable "Unknown Sources" in settings, and install manually.
+
+## For iOS Users
+
+- Open the App Store
+
+- Search for "Class Align"
+
+- Tap "Get" (Requires iOS 14+)
+
+- Open the app after installation
+
+- Sign up or log in (Use your school id as it is required)
+
+- Note: Properly select your role in the Role Selection Screen (Teacher or Student)
+
+✅ Done! You’re ready to manage classes smarter.
+
+# Prefer a Video Guide?
+- Watch our tutorial on YouTube.
+- https://youtu.be/hfv4ITOWuoM
