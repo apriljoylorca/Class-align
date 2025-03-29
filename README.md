@@ -1,6 +1,6 @@
 # ClassAlign
 
-A modern classroom management and scheduling application built with React Native and Firebase.
+A modern approach to class mangaement, classroom real-time availability tracking and booking, with AI scheduling and display.
 
 ## Features
 
@@ -10,6 +10,7 @@ A modern classroom management and scheduling application built with React Native
 - Calendar integration for scheduling
 - Real-time notifications and announcements
 - Profile management
+- Schedule Display
 
 ## Tech Stack
 

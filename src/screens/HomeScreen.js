@@ -7,7 +7,8 @@ import {
   ScrollView, 
   Image,
   TextInput,
-  SafeAreaView
+  SafeAreaView,
+  FlatList
 } from 'react-native';
 import { auth, db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -41,6 +42,7 @@ const HomeScreen = ({ navigation }) => {
           room: "Room 201"
         });
 
+        // First, update the availableClassrooms data in your useEffect
         setAvailableClassrooms([{
           id: "1",
           name: "Prosperity Classroom",
@@ -48,8 +50,7 @@ const HomeScreen = ({ navigation }) => {
           status: "Available",
           availability: "09:00 AM - 4:00 PM",
           capacity: "30 students",
-          equipment: "Projector, Whiteboard",
-          image: require('../../assets/images/classroom1.jpg')
+          equipment: "Projector, Whiteboard"
         }]);
 
         setAnnouncements([{
@@ -152,6 +153,41 @@ const HomeScreen = ({ navigation }) => {
     </View>
   );
 
+  // Add this render function for the classroom card
+  const renderClassroomCard = (classroom) => (
+    <View style={styles.classroomCard}>
+      <View style={styles.classroomHeader}>
+        <Text style={styles.classroomName}>{classroom.name}</Text>
+        <View style={[styles.statusBadge, 
+          { backgroundColor: classroom.status === 'Available' ? '#4CAF50' : '#F44336' }]}>
+          <Text style={styles.statusText}>{classroom.status}</Text>
+        </View>
+      </View>
+      <View style={styles.classroomDetailRow}>
+        <Icon name="location-on" size={16} color="#666" />
+        <Text style={styles.classroomDetail}>{classroom.location}</Text>
+      </View>
+      <View style={styles.classroomDetailRow}>
+        <Icon name="access-time" size={16} color="#666" />
+        <Text style={styles.classroomDetail}>{classroom.availability}</Text>
+      </View>
+      <View style={styles.classroomDetailRow}>
+        <Icon name="people" size={16} color="#666" />
+        <Text style={styles.classroomDetail}>{classroom.capacity}</Text>
+      </View>
+      <View style={styles.classroomDetailRow}>
+        <Icon name="devices" size={16} color="#666" />
+        <Text style={styles.classroomDetail}>{classroom.equipment}</Text>
+      </View>
+      <TouchableOpacity 
+        style={styles.bookButton}
+        onPress={() => navigation.navigate('BookClassroom', { classroom })}
+      >
+        <Text style={styles.bookButtonText}>Book Classroom</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   const currentHour = new Date().getHours();
   let timeGreeting = '';
   
@@ -221,51 +257,6 @@ const HomeScreen = ({ navigation }) => {
                 <Icon name="room" size={18} color="#fff" />
                 <Text style={styles.classDetailText}>{nextClass.room}</Text>
               </View>
-            </View>
-          </View>
-        ) : null;
-      case 'availableClassrooms':
-        return userData?.role === 'teacher' ? (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Available Classrooms</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('BookClassroom')}>
-                <Text style={styles.viewAll}>View All</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.classroomsContainer}>
-              {availableClassrooms.map((classroom) => (
-                <View key={classroom.id} style={styles.classroomCard}>
-                  <Image source={classroom.image} style={styles.classroomImage} />
-                  <View style={styles.classroomInfo}>
-                    <Text style={styles.classroomName}>{classroom.name}</Text>
-                    <View style={styles.classroomDetailRow}>
-                      <Icon name="location-on" size={16} color="#666" />
-                      <Text style={styles.classroomDetail}>{classroom.location}</Text>
-                    </View>
-                    <View style={styles.classroomDetailRow}>
-                      <Icon name="access-time" size={16} color="#666" />
-                      <Text style={styles.classroomDetail}>{classroom.availability}</Text>
-                    </View>
-                    <View style={styles.classroomDetailRow}>
-                      <Icon name="people" size={16} color="#666" />
-                      <Text style={styles.classroomDetail}>{classroom.capacity}</Text>
-                    </View>
-                    <View style={styles.classroomDetailRow}>
-                      <Icon name="devices" size={16} color="#666" />
-                      <Text style={styles.classroomDetail}>{classroom.equipment}</Text>
-                    </View>
-                    <View style={styles.classroomStatus}>
-                      <View style={[styles.statusIndicator, { backgroundColor: '#4CAF50' }]} />
-                      <Text style={styles.classroomStatusText}>{classroom.status}</Text>
-                    </View>
-                    <TouchableOpacity style={styles.bookButton}>
-                      <Text style={styles.bookButtonText}>Book Now</Text>
-                      <Icon name="arrow-forward" size={16} color="#fff" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ))}
             </View>
           </View>
         ) : null;
@@ -371,20 +362,19 @@ const HomeScreen = ({ navigation }) => {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={true}
         bounces={true}
-        overScrollMode="always"
         scrollEventThrottle={16}
-        nestedScrollEnabled={true}
-        alwaysBounceVertical={true}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
-        removeClippedSubviews={true}
       >
-        {sections.map((section) => (
-          <View key={section.id}>
-            {renderSection({ item: section })}
-          </View>
-        ))}
-        <View style={styles.bottomSpacer} />
+        <View style={styles.mainContainer}>
+          {sections.map((section) => {
+            return (
+              <View key={section.id}>
+                {renderSection({ item: section })}
+              </View>
+            );
+          })}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -399,9 +389,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    paddingTop: 16,
+    flexGrow: 1,
+  },
+  mainContainer: {
+    padding: 16,
   },
   profileSection: {
     flexDirection: 'row',
@@ -478,7 +469,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nextClassContainer: {
-    backgroundColor: '#59CE8B',
+    backgroundColor: '#A1CC7F',
     borderRadius: 16,
     padding: 20,
     marginBottom: 20,
@@ -496,7 +487,7 @@ const styles = StyleSheet.create({
   className: {
     fontSize: 18,
     fontFamily: 'Lora-Medium',
-    color: '#0',
+    color: '#FFFFFF',
     marginBottom: 12,
   },
   classDetails: {
@@ -592,7 +583,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   teacherClassCard: {
-    backgroundColor: '#E6E6FA',
+    backgroundColor: '#E2A0E1',
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -603,7 +594,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   studentClassCard: {
-    backgroundColor: '#E0FFFF',
+    backgroundColor: '#C487D6',
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,

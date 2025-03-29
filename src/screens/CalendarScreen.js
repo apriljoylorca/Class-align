@@ -18,12 +18,6 @@ const CalendarScreen = ({ navigation }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // In a real app, fetch user role from your auth system
-        // For demo, we'll use a mock value - replace with actual implementation
-        // const user = auth.currentUser;
-        // const userDoc = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
-        // setUserRole(userDoc.data().role || 'student');
-        
         // Mock user role for demonstration
         setUserRole('teacher'); // Set to teacher for teacher view
         
@@ -118,7 +112,10 @@ const CalendarScreen = ({ navigation }) => {
   const renderClassroomItem = ({ item }) => (
     <View style={styles.classroomCard}>
       <View style={styles.classroomHeader}>
-        <Text style={styles.classroomName}>{item.name}</Text>
+        <View style={styles.classroomTitleContainer}>
+          <Icon name="business" size={18} color="#03AAAA" style={styles.classroomIcon} />
+          <Text style={styles.classroomName}>{item.name}</Text>
+        </View>
         {userRole === 'teacher' && (
           <TouchableOpacity 
             style={styles.bookButton}
@@ -129,15 +126,33 @@ const CalendarScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
       </View>
-      <Text style={styles.classroomDetail}>Location: {item.location}</Text>
-      <Text style={[
-        styles.classroomDetail, 
-        item.status.includes('Available') ? styles.availableText : styles.reservedText
-      ]}>
-        Status: {item.status}
-      </Text>
-      {item.timeOccupied && <Text style={styles.classroomDetail}>Time Occupied: {item.timeOccupied}</Text>}
-      <Text style={styles.classroomDetail}>Availability: {item.availability}</Text>
+      
+      <View style={styles.classroomDetailRow}>
+        <Icon name="location-outline" size={16} color="#666" style={styles.detailIcon} />
+        <Text style={styles.classroomDetail}>{item.location}</Text>
+      </View>
+      
+      <View style={styles.classroomDetailRow}>
+        <Icon name="time-outline" size={16} color="#666" style={styles.detailIcon} />
+        <Text style={styles.classroomDetail}>{item.availability}</Text>
+      </View>
+      
+      <View style={styles.statusContainer}>
+        <View style={[
+          styles.statusBadge,
+          item.status.includes('Available') ? styles.availableBadge : styles.reservedBadge
+        ]}>
+          <Text style={styles.statusText}>{item.status}</Text>
+        </View>
+      </View>
+      
+      {item.timeOccupied && (
+        <View style={styles.classroomDetailRow}>
+          <Icon name="alert-circle-outline" size={16} color="#666" style={styles.detailIcon} />
+          <Text style={styles.classroomDetail}>Occupied: {item.timeOccupied}</Text>
+        </View>
+      )}
+      
       {userRole === 'student' && (
         <Text style={styles.infoText}>Only teachers can book classrooms</Text>
       )}
@@ -153,7 +168,7 @@ const CalendarScreen = ({ navigation }) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <Calendar
         current={selectedDate}
         onDayPress={(day) => setSelectedDate(day.dateString)}
@@ -185,27 +200,34 @@ const CalendarScreen = ({ navigation }) => {
         }}
       />
       
-      <Text style={styles.sectionTitle}>Today's Schedule</Text>
-      <FlatList
-        data={schedules.filter(s => s.date === selectedDate)}
-        renderItem={renderScheduleItem}
-        keyExtractor={item => item.id}
-        scrollEnabled={false}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>No classes scheduled for this day</Text>
-        }
-      />
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Today's Schedule</Text>
+        <FlatList
+          data={schedules.filter(s => s.date === selectedDate)}
+          renderItem={renderScheduleItem}
+          keyExtractor={item => item.id}
+          scrollEnabled={false}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>No classes scheduled for this day</Text>
+          }
+        />
+      </View>
       
-      <Text style={styles.sectionTitle}>Classrooms</Text>
-      {userRole === 'student' && (
-        <Text style={styles.infoBanner}>Viewing available classrooms (booking restricted to teachers)</Text>
-      )}
-      <FlatList
-        data={classrooms}
-        renderItem={renderClassroomItem}
-        keyExtractor={item => item.id}
-        scrollEnabled={false}
-      />
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Classrooms</Text>
+        {userRole === 'student' && (
+          <View style={styles.infoBanner}>
+            <Icon name="information-circle-outline" size={18} color="#006666" />
+            <Text style={styles.infoBannerText}>Viewing available classrooms (booking restricted to teachers)</Text>
+          </View>
+        )}
+        <FlatList
+          data={classrooms}
+          renderItem={renderClassroomItem}
+          keyExtractor={item => item.id}
+          scrollEnabled={false}
+        />
+      </View>
     </ScrollView>
   );
 };
@@ -213,8 +235,10 @@ const CalendarScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#F8F9FA',
+  },
+  contentContainer: {
+    padding: 16,
   },
   loadingContainer: {
     flex: 1,
@@ -226,22 +250,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#03AAAA',
   },
+  section: {
+    marginBottom: 10,
+    marginTop: 5,
+  },
   sectionTitle: {
     fontSize: 20,
     fontFamily: 'Lora-SemiBold',
-    marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 12,
     color: '#006666',
   },
   scheduleCard: {
-    backgroundColor: '#F0CE87',
+    backgroundColor: '#FFF9E6',
     padding: 16,
-    borderRadius: 16,
+    borderRadius: 12,
     marginBottom: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#F0CE87',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
     elevation: 2,
   },
   scheduleSubject: {
@@ -257,42 +286,71 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   classroomCard: {
-    backgroundColor: '#E0FFFF',
+    backgroundColor: '#FFFFFF',
     padding: 16,
-    borderRadius: 16,
+    borderRadius: 12,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E0F2F1',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
     elevation: 2,
   },
   classroomHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  classroomTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  classroomIcon: {
+    marginRight: 8,
   },
   classroomName: {
     fontFamily: 'Lora-Medium',
     fontSize: 16,
     color: '#333',
+    flexShrink: 1,
+  },
+  classroomDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  detailIcon: {
+    marginRight: 8,
+    marginTop: 2,
   },
   classroomDetail: {
     fontFamily: 'Quicksand-Regular',
     fontSize: 14,
     color: '#555',
-    marginBottom: 4,
+    flex: 1,
   },
-  editButton: {
-    padding: 4,
+  statusContainer: {
+    marginVertical: 8,
   },
-  emptyText: {
-    fontFamily: 'Lora-Italic',
-    textAlign: 'center',
-    marginTop: 20,
-    color: '#666',
-    fontSize: 13,
+  statusBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  availableBadge: {
+    backgroundColor: '#E8F5E9',
+  },
+  reservedBadge: {
+    backgroundColor: '#FFEBEE',
+  },
+  statusText: {
+    fontFamily: 'Quicksand-Medium',
+    fontSize: 12,
   },
   availableText: {
     color: '#4CAF50',
@@ -300,36 +358,54 @@ const styles = StyleSheet.create({
   reservedText: {
     color: '#F44336',
   },
+  emptyText: {
+    fontFamily: 'Lora-Italic',
+    textAlign: 'center',
+    marginTop: 12,
+    color: '#666',
+    fontSize: 14,
+    padding: 16,
+    backgroundColor: '#FAFAFA',
+    borderRadius: 8,
+  },
   infoText: {
     fontFamily: 'Quicksand-Medium',
     fontSize: 12,
     color: '#03AAAA',
     marginTop: 8,
     fontStyle: 'italic',
+    textAlign: 'center',
   },
   infoBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E0F7FA',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  infoBannerText: {
     fontFamily: 'Quicksand-Medium',
     fontSize: 14,
     color: '#006666',
-    backgroundColor: '#E0FFFF',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
-    textAlign: 'center',
+    marginLeft: 8,
+    flex: 1,
   },
   bookButton: {
     backgroundColor: '#03AAAA',
     borderRadius: 8,
     paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 100,
   },
   bookButtonText: {
     color: '#fff',
     fontSize: 14,
     fontFamily: 'Lora-Medium',
-    marginRight: 8,
+    marginRight: 4,
   },
 });
 
