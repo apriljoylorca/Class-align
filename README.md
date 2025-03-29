@@ -83,3 +83,6 @@ ClassAlign/
 # Prefer a Video Guide?
 - Watch our tutorial on YouTube.
 - https://youtu.be/hfv4ITOWuoM?si=1489Z7wHElRaxrIW
+
+# Disclaimer
+- The app isn't finish yet. Its 50% done on the frontend and 45% done on the backend. The datas used on the video are mock datas except for the user which has already been integrated on the backend.
