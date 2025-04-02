@@ -1,6 +1,6 @@
 # ClassAlign
 
-Class Align is a web-based platform designed to optimize class scheduling and improve communication between students, teachers, and administrators. It offers AI-powered scheduling, real-time class management, and personalized notifications. With the added feature of real-time classroom availability tracking and booking, users can instantly check room availability and reserve spaces, ensuring efficient use of resources. Class Align allows users to create, track, and update schedules seamlessly—reducing conflicts and enhancing productivity. The platform ensures a smooth academic experience by providing an intuitive interface for managing class schedules efficiently.
+Class Align is a mobile-platform designed to optimize class scheduling and improve communication between students, teachers, and administrators. It offers AI-powered scheduling, real-time class management, and personalized notifications. With the added feature of real-time classroom availability tracking and booking, users can instantly check room availability and reserve spaces, ensuring efficient use of resources. Class Align allows users to create, track, and update schedules seamlessly—reducing conflicts and enhancing productivity. The platform ensures a smooth academic experience by providing an intuitive interface for managing class schedules efficiently.
 
 ## Features
 
@@ -85,4 +85,4 @@ ClassAlign/
 - https://youtu.be/hfv4ITOWuoM?si=1489Z7wHElRaxrIW
 
 # Disclaimer
-- The app isn't finish yet. Its 50% done on the frontend and 45% done on the backend. The datas used on the video are mock datas except for the user which has already been integrated on the backend.
+- The app isn't finish yet. Its 50% done on the frontend and 35% done on the backend. The datas used on the video are mock datas except for the user which has already been integrated on the backend.
